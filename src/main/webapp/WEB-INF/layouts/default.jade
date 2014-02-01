@@ -1,0 +1,21 @@
+-@val body: String
+-@val s: skinny.Skinny
+
+!!! 5
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    =unescape(s.csrfMetaTags)
+    link(rel="stylesheet" href={uri("/assets/vendor/foundation/css/normalize.css")})
+    link(rel="stylesheet" href={uri("/assets/vendor/foundation/css/foundation.min.css")})
+    script(type="text/javascript" src="/assets/vendor/modernizr/modernizr.js")
+  body
+    =unescape(body)
+
+    script(type="text/javascript" src={uri("/assets/vendor/jquery/jquery.min.js")})
+    script(type="text/javascript" src={uri("/assets/vendor/fastclick/lib/fastclick.js")})
+    script(type="text/javascript" src={uri("/assets/vendor/foundation/js/foundation.min.js")})
+    :javascript
+      $(document).foundation();
+

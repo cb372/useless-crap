@@ -1,0 +1,22 @@
+{
+  "name": "useless-crap",
+  "version": "0.0.0",
+  "authors": [
+    "Chris Birchall"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/main/webapp/assets/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.10",
+    "foundation": "~5.0.3",
+    "jquery": "~2.1.0"
+  }
+}
