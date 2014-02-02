@@ -1,6 +1,7 @@
 package controller
 
-import model.Purchase
+import model.{PurchaseInfo, Purchase}
+import org.joda.time.DateTime
 
 /**
  * Author: chris
@@ -9,9 +10,9 @@ import model.Purchase
 class ApiController extends ApplicationController  {
 
   def postPurchase = {
-    val purchase = parsedBody.extract[Purchase]
+    val purchase = parsedBody.extract[PurchaseInfo]
     logger.info(s"Saving purchase: " + purchase)
-    // TODO save to DB
+    Purchase.createWithAttributes('userId -> purchase.userId, 'amount -> purchase.amount, 'createdAt -> DateTime.now)
   }
 
 }
