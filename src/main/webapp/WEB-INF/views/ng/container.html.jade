@@ -1,23 +1,9 @@
+script(type="text/javascript" src="https://oauth.io/auth/download/latest/oauth.js")
 script(type="text/javascript" src={uri("/assets/vendor/angular/angular.js")})
+script(type="text/javascript" src={uri("/assets/vendor/angular-route/angular-route.js")})
+script(type="text/javascript" src={uri("/assets/app/auth.js")})
 script(type="text/javascript" src={uri("/assets/app/app.js")})
 
-div(ng-app="app" ng-controller='AppCtrl')
-  form(name='transactionForm')
-    .row
-      div.text-center
-        h1 Useless Crap
-    hr
-    .row
-      div.text-center
-        h2
-          span Oh no! I just spent
-    .row
-      div.large-centered.large-6.columns
-        input(ng-model='amount' type='number' min='0' required)
-    .row
-      div.text-center
-        h2 on some useless crap! {{amount}}
-    .row
-      div.text-center
-        button(ng-disabled='transactionForm.$invalid' ng-click='submitTransaction()') Oops!
+div(ng-app='app')
+  div(ng-view)
 

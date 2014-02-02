@@ -1,0 +1,27 @@
+<form name="transactionForm">
+  <div class="row">
+    <div class="text-center">
+      <h1>Useless Crap</h1>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="text-center">
+      <h2>Oh no! I just spent</h2>
+    </div>
+  </div>
+  <div class="large-centered large-6 columns">
+    <input type="number" min="0" ng-model="amount" required>
+  </div>
+  <div class="row">
+    <div class="text-center">
+      <h2>on some useless crap!</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="text-center">
+      <button ng-disabled="transactionForm.$invalid" ng-click="submitTransaction()">Oops!</button>
+    </div>
+  </div>
+</form>
+
