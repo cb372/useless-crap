@@ -8,8 +8,8 @@ app.run(['auth', function(auth) {
 
 app.config(function($routeProvider, $locationProvider) {
   $routeProvider.when('/', {
-    templateUrl: 'partials/transaction.tmpl.html',
-    controller: 'TransactionCtrl'
+    templateUrl: 'partials/purchase.tmpl.html',
+    controller: 'PurchaseCtrl'
   }).when('/login', {
     templateUrl: 'partials/login.tmpl.html',
     controller: 'LoginCtrl'
@@ -19,19 +19,32 @@ app.config(function($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(false);
 });
 
-app.controller('TransactionCtrl', function($scope, $log, auth){
-    $scope.submitTransaction = function() {
-        $log.info('Sending transaction for ' + $scope.amount + ' user ID = ' + auth.userId());
-    }
+app.controller('PurchaseCtrl', function($scope, $log, $http, auth){
+  $scope.submitPurchase = function() {
+    $log.info('Sending purchase for ' + $scope.amount + ' by user ' + auth.userId());
+    $http.post('/api/purchases', {amount: $scope.amount, userId: auth.userId()})
+        .success(function() {
+          $scope.infoMsg = 'OK, got it!';
+          reset();
+        })
+        .error(function(data, status) {
+          $scope.errorMsg = 'Oh dear, got a ' + status + ' response. Please try again later.';
+        });
+  };
+
+  function reset() {
+    $scope.amount = null;
+  }
+
 });
 
 app.controller('LoginCtrl', function($scope, $log, $location, auth){
-    $scope.twitterLogin = function() {
-        auth.doTwitterLogin().then(function() {
-          // success
-          $location.path('/');
-        }, function(errorMsg) {
-            $scope.errorMsg = errorMsg;
-        });
-    };
+  $scope.twitterLogin = function() {
+    auth.doTwitterLogin().then(function() {
+      // success
+      $location.path('/');
+    }, function(errorMsg) {
+      $scope.errorMsg = errorMsg;
+    });
+  };
 });

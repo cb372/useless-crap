@@ -6,6 +6,7 @@ class ScalatraBootstrap extends SkinnyLifeCycle {
 
   override def initSkinnyApp(ctx: ServletContext) {
     Controllers.ng.mount(ctx)
+    Controllers.api.mount(ctx)
     AssetsController.mount(ctx)
   }
 
