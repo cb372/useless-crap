@@ -25,7 +25,7 @@ app.controller('PurchaseCtrl', function($scope, $log, $http, auth){
 
   $scope.submitPurchase = function() {
     $log.info('Sending purchase for ' + $scope.amount + ' by user ' + auth.userId());
-    $http.post('/api/purchases', {amount: $scope.amount})
+    $http.post('/api/purchases', {amount: $scope.amount, tags: parseTags()})
         .success(function() {
           $scope.infoMsg = 'OK, got it!';
           reset();
@@ -37,6 +37,13 @@ app.controller('PurchaseCtrl', function($scope, $log, $http, auth){
 
   function reset() {
     $scope.amount = null;
+    $scope.tags = null;
+  }
+
+  function parseTags() {
+    // TODO should be doing this with parsers and formatters
+    if (!$scope.tags) return [];
+    return $scope.tags.split(/\s*,\s*/); // split by comma and trim spaces
   }
 
 });

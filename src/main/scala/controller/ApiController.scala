@@ -57,9 +57,17 @@ class ApiController extends ApplicationController  {
 
   def postPurchase = {
     val amount = (parsedBody \ "amount").extract[Double]
+    val tags = (parsedBody \ "tags").extract[List[String]].map(_.trim)
     val userId = twitter.getId
-    val id = Purchase.createWithAttributes('userId -> userId, 'amount -> amount, 'createdAt -> DateTime.now)
-    Purchase.findById(id)
+    val purchaseId = Purchase.createWithAttributes('userId -> userId, 'amount -> amount, 'createdAt -> DateTime.now)
+    for (tag <- tags) {
+      val tagId = {
+        // Find or create a tag with the given name
+        Tag.findByName(tag).map(_.id).getOrElse(Tag.createWithAttributes('name -> tag))
+      }
+      PurchaseTag.createWithAttributes('purchaseId -> purchaseId, 'tagId -> tagId)
+    }
+    Purchase.joins(Purchase.tags).findById(purchaseId)
   }
 
 }
