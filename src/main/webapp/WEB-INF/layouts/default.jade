@@ -9,7 +9,8 @@ html(lang="en")
     =unescape(s.csrfMetaTags)
     link(rel="stylesheet" href={uri("/assets/vendor/foundation/css/normalize.css")})
     link(rel="stylesheet" href={uri("/assets/vendor/foundation/css/foundation.min.css")})
-    script(type="text/javascript" src="/assets/vendor/modernizr/modernizr.js")
+    link(rel="stylesheet" href={uri("/assets/css/uc.css")})
+    script(type="text/javascript" src={uri("/assets/vendor/modernizr/modernizr.js")})
   body
     =unescape(body)
 

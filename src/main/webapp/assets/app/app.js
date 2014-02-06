@@ -21,6 +21,8 @@ app.config(function($routeProvider, $locationProvider) {
 
 app.controller('PurchaseCtrl', function($scope, $log, $http, auth){
 
+  $scope.userCurrency = '¥'; // TODO read from user settings
+
   $scope.submitPurchase = function() {
     $log.info('Sending purchase for ' + $scope.amount + ' by user ' + auth.userId());
     $http.post('/api/purchases', {amount: $scope.amount})

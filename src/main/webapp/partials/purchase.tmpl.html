@@ -1,36 +1,42 @@
-<div ng-show="infoMsg" data-alert class="alert-box">
-  {{infoMsg}}
-  <a href="#" class="close">&times;</a>
-</div>
-<div ng-show="errorMsg" data-alert class="alert-box warning">
-  {{errorMsg}}
-  <a href="#" class="close">&times;</a>
+<div class="row">
+  <div ng-show="infoMsg" data-alert class="alert-box">
+    {{infoMsg}}
+    <a href="#" class="close">&times;</a>
+  </div>
+  <div ng-show="errorMsg" data-alert class="alert-box warning">
+    {{errorMsg}}
+    <a href="#" class="close">&times;</a>
+  </div>
 </div>
 
 <form name="purchaseForm">
+
   <div class="row">
-    <div class="text-center">
-      <h1>Useless Crap</h1>
-    </div>
+    <fieldset>
+      <legend>Register a purchase</legend>
+
+      <label>
+        Price
+        <div class="row collapse">
+          <div class="small-2 columns">
+            <span class="prefix">{{userCurrency}}</span>
+          </div>
+          <div class="small-10 columns">
+            <input type="number" min="0" ng-model="amount" required>
+          </div>
+        </div>
+      </label>
+
+      <label>
+        Tags (optional)
+        <input type="text" placeholder="e.g. coffee,drink">
+      </label>
+    </fieldset>
   </div>
-  <hr>
+
   <div class="row">
-    <div class="text-center">
-      <h2>Oh no! I just spent</h2>
-    </div>
+    <button ng-disabled="purchaseForm.$invalid" ng-click="submitPurchase()">Submit</button>
   </div>
-  <div class="large-centered large-6 columns">
-    <input type="number" min="0" ng-model="amount" required>
-  </div>
-  <div class="row">
-    <div class="text-center">
-      <h2>on some useless crap!</h2>
-    </div>
-  </div>
-  <div class="row">
-    <div class="text-center">
-      <button ng-disabled="purchaseForm.$invalid" ng-click="submitPurchase()">Oops!</button>
-    </div>
-  </div>
+
 </form>
 
