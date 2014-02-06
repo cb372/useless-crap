@@ -1,3 +1,9 @@
+# Useless Crap
+
+Track your unnecessary spending.
+
+Built with Skinny + AngularJS. Work in progress.
+
 ## Skinny appliation
 
 Run Skinny app now!
