@@ -26,7 +26,8 @@ object SkinnyAppBuild extends Build {
       "org.skinny-framework"    %% "skinny-test"        % skinnyVersion         % "test",
       "org.eclipse.jetty"       %  "jetty-webapp"       % jettyVersion          % "container",
       "org.eclipse.jetty"       %  "jetty-plus"         % jettyVersion          % "container",
-      "org.eclipse.jetty.orbit" %  "javax.servlet"      % "3.0.0.v201112011016" % "container;provided;test"
+      "org.eclipse.jetty.orbit" %  "javax.servlet"      % "3.0.0.v201112011016" % "container;provided;test",
+      "org.twitter4j"           % "twitter4j-core"      % "3.0.5"
     ),
     resolvers ++= Seq(
       "sonatype releases"  at "http://oss.sonatype.org/content/repositories/releases"

@@ -2,9 +2,9 @@ var app = angular.module('app', [
     'ngRoute', 'auth'
 ]);
 
-app.run(['auth', function(auth) {
+app.run(function(auth) {
   auth.ensureLoggedIn();
-}]);
+});
 
 app.config(function($routeProvider, $locationProvider) {
   $routeProvider.when('/', {
@@ -23,7 +23,7 @@ app.controller('PurchaseCtrl', function($scope, $log, $http, auth){
 
   $scope.submitPurchase = function() {
     $log.info('Sending purchase for ' + $scope.amount + ' by user ' + auth.userId());
-    $http.post('/api/purchases', {amount: $scope.amount, userId: auth.userId()})
+    $http.post('/api/purchases', {amount: $scope.amount})
         .success(function() {
           $scope.infoMsg = 'OK, got it!';
           reset();

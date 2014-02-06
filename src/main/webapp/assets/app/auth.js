@@ -17,6 +17,14 @@ angular.module('auth', [])
       return service.twitter_account.id_str;
     },
 
+    oAuthToken: function() {
+      return service.isLoggedIn() ? twitter_client.oauth_token : null;
+    },
+
+    oAuthTokenSecret: function() {
+      return service.isLoggedIn() ? twitter_client.oauth_token_secret : null;
+    },
+
     ensureLoggedIn: function() {
       if (service.isLoggedIn()) {
         $log.info('User is already logged in: ' + service.twitter_account);
@@ -52,4 +60,16 @@ angular.module('auth', [])
   };
 
   return service;
+})
+
+.config(function($httpProvider) {
+  $httpProvider.interceptors.push(function($q, auth) {
+    return {
+      'request': function(config) {
+        config.headers['oauth_token'] = auth.oAuthToken();
+        config.headers['oauth_token_secret'] = auth.oAuthTokenSecret();
+        return config;
+      }
+    };
+  });
 });
