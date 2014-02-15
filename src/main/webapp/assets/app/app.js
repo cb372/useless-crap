@@ -1,6 +1,10 @@
 var app = angular.module('app', [
-    'ngRoute', 'auth'
+  'ngRoute', 'auth'
 ]);
+
+app.constant('constants', {
+  recentPurchasesLimit: 5
+});
 
 app.run(function(auth) {
   auth.ensureLoggedIn();
@@ -19,21 +23,39 @@ app.config(function($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(false);
 });
 
-app.controller('PurchaseCtrl', function($scope, $log, $http, auth){
+app.controller('PurchaseCtrl', function($scope, $log, $http, auth, constants){
 
   $scope.userCurrency = '¥'; // TODO read from user settings
+  $scope.recentPurchases = [];
+
+  $http.get('/api/purchases/recent')
+      .success(function(data) {
+        addRecentPurchases(data);
+      });
 
   $scope.submitPurchase = function() {
     $log.info('Sending purchase for ' + $scope.amount + ' by user ' + auth.userId());
     $http.post('/api/purchases', {amount: $scope.amount, tags: parseTags()})
-        .success(function() {
+        .success(function(data) {
           $scope.infoMsg = 'OK, got it!';
+          addRecentPurchases([data]);
           reset();
         })
         .error(function(data, status) {
           $scope.errorMsg = 'Oh dear, got a ' + status + ' response. Please try again later.';
         });
   };
+
+  function addRecentPurchases(purchases) {
+    Array.prototype.unshift.apply($scope.recentPurchases, purchases);
+    trimArray($scope.recentPurchases, constants.recentPurchasesLimit);
+  }
+
+  function trimArray(array, maxSize) {
+    if (array.length > maxSize) {
+      array.splice(maxSize, (array.length - maxSize));
+    }
+  }
 
   function reset() {
     $scope.amount = null;

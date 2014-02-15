@@ -20,6 +20,7 @@ package object model {
       amount = rs.double(n.amount),
       createdAt = rs.dateTime(n.createdAt)
     )
+
   }
 
   object Tag extends SkinnyCRUDMapper[Tag] {

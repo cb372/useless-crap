@@ -6,6 +6,7 @@ import twitter4j.{Twitter, TwitterException, TwitterFactory}
 import twitter4j.auth.AccessToken
 import org.scalatra.Unauthorized
 import twitter4j.conf.ConfigurationBuilder
+import scalikejdbc.SQLInterpolation._
 
 object ApiController {
 
@@ -53,8 +54,6 @@ class ApiController extends ApplicationController  {
 
   private def twitter = request.getAs[Twitter]("twitter").get
 
-  //case class PurchaseInfo(amount: Double)
-
   def postPurchase = {
     val amount = (parsedBody \ "amount").extract[Double]
     val tags = (parsedBody \ "tags").extract[List[String]].map(_.trim)
@@ -68,6 +67,12 @@ class ApiController extends ApplicationController  {
       PurchaseTag.createWithAttributes('purchaseId -> purchaseId, 'tagId -> tagId)
     }
     Purchase.joins(Purchase.tags).findById(purchaseId)
+  }
+
+  def listRecentPurchases = {
+    val limit = params.getAsOrElse[Int]("limit", 5).max(0)
+    val p = Purchase.defaultAlias
+    Purchase.joins(Purchase.tags).findAllPaging(offset = 0, limit = limit, ordering = sqls"${p.createdAt} desc")
   }
 
 }

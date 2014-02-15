@@ -8,6 +8,7 @@ object Controllers {
   }
 
   object api extends ApiController with Routes {
+    get("/api/purchases/recent")(listRecentPurchases).as('listRecentPurchases)
     post("/api/purchases")(postPurchase).as('postPurchase)
   }
 }
