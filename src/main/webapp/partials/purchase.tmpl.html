@@ -19,7 +19,7 @@
         Price
         <div class="row collapse">
           <div class="small-2 columns">
-            <span class="prefix">{{userCurrency}}</span>
+            <span class="prefix">{{user.currency}}</span>
           </div>
           <div class="small-10 columns">
             <input type="number" min="0" step="any" ng-model="amount" required>
@@ -51,7 +51,7 @@
     <tbody>
       <tr ng-repeat="purchase in recentPurchases">
         <td>{{purchase.createdAt | date:short}}</td>
-        <td>{{userCurrency}} {{purchase.amount}}</td>
+        <td>{{user.currency}} {{purchase.amount}}</td>
         <td>
           <span ng-repeat="tag in purchase.tags"><span class="radius label">{{tag.name}}</span>&nbsp;</span>
         </td>
@@ -61,7 +61,13 @@
 
 </div>
 
-<div class="row" ng-show="userStats.since">
+<div class="row" ng-show="user.joinedAt">
   <hr/>
-  <p>You have spent <strong>{{userCurrency}}{{userStats.totalSpent}}</strong> since <strong>{{userStats.since | date:short}}</strong></p>
+  <div class="large-6 columns">
+    <p>You have spent <strong>{{user.currency}}{{userStats.totalSpent}}</strong> since <strong>{{user.joinedAt | date:short}}</strong></p>
+  </div>
+  <div class="large-6 columns text-right">
+    <a href="#/settings" title="Settings">@{{userStats.screenName}} <i class="foundicon-settings medium"></i></a>
+  </div>
+
 </div>

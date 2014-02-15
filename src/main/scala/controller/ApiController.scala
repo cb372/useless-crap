@@ -6,10 +6,12 @@ import twitter4j.auth.AccessToken
 import org.scalatra.Unauthorized
 import twitter4j.conf.ConfigurationBuilder
 import scalikejdbc.SQLInterpolation._
-import scalikejdbc.SQLInterpolation.SQLSyntax._
 import model._
+import cacheable._
+import guava.GuavaCache
 
 object ApiController {
+  implicit val cacheConfig = CacheConfig(GuavaCache())
 
   /*
    Note: env vars must be set.
@@ -21,8 +23,9 @@ object ApiController {
       .build()
   )
 
-  private def twitterClient(oauthToken: String, oauthTokenSecret: String) =
+  private def twitterClient(oauthToken: String, oauthTokenSecret: String): Twitter = cacheable {
     twitterFactory.getInstance(new AccessToken(oauthToken, oauthTokenSecret))
+  }
 
 }
 
@@ -77,11 +80,23 @@ class ApiController extends ApplicationController  {
     Purchase.joins(Purchase.tags).findAllPaging(offset = 0, limit = limit, ordering = sqls"${p.createdAt} desc")
   }
 
+  def userInfo = {
+    val userId = twitter.getId
+    User.findOrCreateById(userId)
+  }
+
   def userStats = {
     val userId = twitter.getId
     val totalSpent = Purchase.totalSpentByUser(userId)
     val firstPurchase = Purchase.findFirstPurchaseByUser(userId)
-    UserStats(totalSpent, firstPurchase.map(_.createdAt))
+    UserStats(totalSpent, firstPurchase.map(_.createdAt), twitter.getScreenName)
+  }
+
+  def updateUserSettings = {
+    val userId = twitter.getId
+    val currency = (parsedBody \ "currency").extract[String]
+    User.updateById(userId).withAttributes('currency -> currency)
+    User.findById(userId)
   }
 
 }

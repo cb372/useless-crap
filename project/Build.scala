@@ -8,6 +8,7 @@ import ScalateKeys._
 object SkinnyAppBuild extends Build {
 
   val skinnyVersion = "0.9.28"
+  val scalaVer= "2.10.3"
 
   // In some cases, Jety 9.1 looks very slow (didn't investigate the reason)
   //val jettyVersion = "9.1.0.v20131115"
@@ -16,7 +17,7 @@ object SkinnyAppBuild extends Build {
   lazy val baseSettings = Defaults.defaultSettings ++ ScalatraPlugin.scalatraWithJRebel ++ Seq(
     organization := "org.skinny-framework",
     version      := "0.1.0-SNAPSHOT",
-    scalaVersion := "2.10.3",
+    scalaVersion := scalaVer,
     libraryDependencies := Seq(
       "org.skinny-framework"    %% "skinny-framework"   % skinnyVersion,
       "org.skinny-framework"    %% "skinny-assets"      % skinnyVersion,
@@ -27,7 +28,9 @@ object SkinnyAppBuild extends Build {
       "org.eclipse.jetty"       %  "jetty-webapp"       % jettyVersion          % "container",
       "org.eclipse.jetty"       %  "jetty-plus"         % jettyVersion          % "container",
       "org.eclipse.jetty.orbit" %  "javax.servlet"      % "3.0.0.v201112011016" % "container;provided;test",
-      "org.twitter4j"           % "twitter4j-core"      % "3.0.5"
+      "org.twitter4j"           % "twitter4j-core"      % "3.0.5",
+      "com.github.cb372"        %% "cacheable-guava"    % "0.1.1",
+      "org.scala-lang"          % "scala-compiler"      % scalaVer
     ),
     resolvers ++= Seq(
       "sonatype releases"  at "http://oss.sonatype.org/content/repositories/releases"

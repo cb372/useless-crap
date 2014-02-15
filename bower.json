@@ -17,7 +17,9 @@
   "dependencies": {
     "angular": "~1.2.10",
     "angular-route": "~1.2.10",
+    "angular-resource": "~1.2.10",
     "foundation": "~5.0.3",
+    "foundation-icons": "*",
     "jquery": "~2.1.0"
   }
 }

@@ -7,7 +7,8 @@ package object model {
   case class Purchase(id: Int, userId: Long, amount: Double, createdAt: DateTime, tags: Seq[Tag] = Nil)
   case class Tag(id: Int, name: String)
   case class PurchaseTag(purchaseId: Int, tagId: Int)
-  case class UserStats(totalSpent: Double, since: Option[DateTime])
+  case class UserStats(totalSpent: Double, since: Option[DateTime], screenName: String)
+  case class User(id: Long, joinedAt: DateTime, currency: String)
 
   object Purchase extends SkinnyCRUDMapper[Purchase] {
     val tags = hasManyThrough[Tag](PurchaseTag, Tag, (purchase, ts) => purchase.copy(tags = ts))
@@ -47,6 +48,25 @@ package object model {
   object PurchaseTag extends SkinnyJoinTable[PurchaseTag] {
     override def defaultAlias = createAlias("pt")
     override def tableName = "purchases_tags"
+  }
+
+  object User extends SkinnyCRUDMapper[User] {
+    override def defaultAlias = createAlias("s")
+    override def tableName = "user"
+    override def useAutoIncrementPrimaryKey = false
+
+    override def extract(rs: WrappedResultSet, n: ResultName[User]) =
+      new User(rs.long(n.id), rs.dateTime(n.joinedAt), rs.string(n.currency))
+
+    def findOrCreateById(userId: Long): User = {
+      val existing = findBy(SQLSyntax.eq(defaultAlias.id, userId))
+      if (existing.isDefined) {
+        existing.get
+      } else {
+        createWithAttributes('id -> userId)
+        findById(userId).get
+      }
+    }
   }
 }
 

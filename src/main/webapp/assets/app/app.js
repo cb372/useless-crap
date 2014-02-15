@@ -1,5 +1,5 @@
 var app = angular.module('app', [
-  'ngRoute', 'auth'
+  'ngRoute', 'ngResource', 'auth'
 ]);
 
 app.constant('constants', {
@@ -17,30 +17,27 @@ app.config(function($routeProvider, $locationProvider) {
   }).when('/login', {
     templateUrl: 'partials/login.tmpl.html',
     controller: 'LoginCtrl'
+  }).when('/settings', {
+    templateUrl: 'partials/settings.tmpl.html',
+    controller: 'SettingsCtrl'
   }).otherwise({
     redirectTo: '/'
   });
   $locationProvider.html5Mode(false);
 });
 
-app.controller('PurchaseCtrl', function($scope, $log, $http, auth, constants){
+app.controller('PurchaseCtrl', function($scope, $log, $http, $resource, constants){
 
-  $scope.userCurrency = '¥'; // TODO read from user settings
+  $scope.user = $resource('/api/user').get();
   $scope.recentPurchases = [];
-  $scope.userStats = { totalSpent: 0, since: null };
+  $scope.userStats = $resource('/api/user/stats').get();
 
   $http.get('/api/purchases/recent')
       .success(function(data) {
         addRecentPurchases(data);
       });
 
-  $http.get('/api/user/stats')
-      .success(function(data) {
-        setUserStats(data);
-      });
-
   $scope.submitPurchase = function() {
-    $log.info('Sending purchase for ' + $scope.amount + ' by user ' + auth.userId());
     $http.post('/api/purchases', {amount: $scope.amount, tags: parseTags()})
         .success(function(data) {
           $scope.infoMsg = 'OK, got it!';
@@ -56,11 +53,6 @@ app.controller('PurchaseCtrl', function($scope, $log, $http, auth, constants){
   function addRecentPurchases(purchases) {
     Array.prototype.unshift.apply($scope.recentPurchases, purchases);
     trimArray($scope.recentPurchases, constants.recentPurchasesLimit);
-  }
-
-  function setUserStats(data) {
-    incrementTotalSpent(data.totalSpent);
-    $scope.userStats.since = data.since;
   }
 
   function incrementTotalSpent(amount) {
@@ -95,4 +87,15 @@ app.controller('LoginCtrl', function($scope, $log, $location, auth){
       $scope.errorMsg = errorMsg;
     });
   };
+});
+
+app.controller('SettingsCtrl', function($scope, $log, $resource){
+  $scope.user = $resource('/api/user').get();
+
+  $scope.saveSettings = function() {
+    $scope.user.$save(function(updatedUser, putResponseHeaders) {
+      $scope.infoMsg = 'Settings updated!';
+    });
+  }
+
 });

@@ -1,0 +1,32 @@
+<div class="row">
+  <div ng-show="infoMsg" data-alert class="alert-box">
+    {{infoMsg}}
+    <a href="#" class="close">&times;</a>
+  </div>
+  <div ng-show="errorMsg" data-alert class="alert-box warning">
+    {{errorMsg}}
+    <a href="#" class="close">&times;</a>
+  </div>
+</div>
+
+<form name="settingsForm">
+
+  <div class="row">
+    <fieldset>
+      <legend>Settings</legend>
+
+      <label>Currency</label>
+      <input type="radio" ng-model="user.currency" value="¥" id="currency_yen"><label for="currency_yen">¥</label>
+      <input type="radio" ng-model="user.currency" value="$" id="currency_dollar"><label for="currency_dollar">$</label>
+      <input type="radio" ng-model="user.currency" value="£" id="currency_pound"><label for="currency_pound">£</label>
+      <input type="radio" ng-model="user.currency" value="€" id="currency_euro"><label for="currency_euro">€</label>
+
+    </fieldset>
+  </div>
+
+  <div class="row">
+    <button ng-disabled="settingsForm.$pristine || settingsForm.$invalid" ng-click="saveSettings()">Save</button>
+  </div>
+
+</form>
+
