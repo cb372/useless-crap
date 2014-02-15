@@ -60,3 +60,8 @@
   </table>
 
 </div>
+
+<div class="row" ng-show="userStats.since">
+  <hr/>
+  <p>You have spent <strong>{{userCurrency}}{{userStats.totalSpent}}</strong> since <strong>{{userStats.since | date:short}}</strong></p>
+</div>

@@ -27,10 +27,16 @@ app.controller('PurchaseCtrl', function($scope, $log, $http, auth, constants){
 
   $scope.userCurrency = '¥'; // TODO read from user settings
   $scope.recentPurchases = [];
+  $scope.userStats = { totalSpent: 0, since: null };
 
   $http.get('/api/purchases/recent')
       .success(function(data) {
         addRecentPurchases(data);
+      });
+
+  $http.get('/api/user/stats')
+      .success(function(data) {
+        setUserStats(data);
       });
 
   $scope.submitPurchase = function() {
@@ -39,6 +45,7 @@ app.controller('PurchaseCtrl', function($scope, $log, $http, auth, constants){
         .success(function(data) {
           $scope.infoMsg = 'OK, got it!';
           addRecentPurchases([data]);
+          incrementTotalSpent($scope.amount);
           reset();
         })
         .error(function(data, status) {
@@ -49,6 +56,15 @@ app.controller('PurchaseCtrl', function($scope, $log, $http, auth, constants){
   function addRecentPurchases(purchases) {
     Array.prototype.unshift.apply($scope.recentPurchases, purchases);
     trimArray($scope.recentPurchases, constants.recentPurchasesLimit);
+  }
+
+  function setUserStats(data) {
+    incrementTotalSpent(data.totalSpent);
+    $scope.userStats.since = data.since;
+  }
+
+  function incrementTotalSpent(amount) {
+    $scope.userStats.totalSpent += amount;
   }
 
   function trimArray(array, maxSize) {

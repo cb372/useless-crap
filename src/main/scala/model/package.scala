@@ -7,6 +7,7 @@ package object model {
   case class Purchase(id: Int, userId: Long, amount: Double, createdAt: DateTime, tags: Seq[Tag] = Nil)
   case class Tag(id: Int, name: String)
   case class PurchaseTag(purchaseId: Int, tagId: Int)
+  case class UserStats(totalSpent: Double, since: Option[DateTime])
 
   object Purchase extends SkinnyCRUDMapper[Purchase] {
     val tags = hasManyThrough[Tag](PurchaseTag, Tag, (purchase, ts) => purchase.copy(tags = ts))
@@ -21,6 +22,17 @@ package object model {
       createdAt = rs.dateTime(n.createdAt)
     )
 
+    def totalSpentByUser(userId: Long): Double = {
+      where(SQLSyntax.eq(defaultAlias.userId, userId)).sum('amount).toDouble
+    }
+
+    def findFirstPurchaseByUser(userId: Long): Option[Purchase] = {
+      findAllByPaging(
+        where = SQLSyntax.eq(defaultAlias.userId, userId),
+        limit = 1,
+        ordering = sqls"${defaultAlias.createdAt} asc")
+        .headOption
+    }
   }
 
   object Tag extends SkinnyCRUDMapper[Tag] {

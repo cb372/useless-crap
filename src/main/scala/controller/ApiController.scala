@@ -1,12 +1,13 @@
 package controller
 
-import model._
 import org.joda.time.DateTime
 import twitter4j.{Twitter, TwitterException, TwitterFactory}
 import twitter4j.auth.AccessToken
 import org.scalatra.Unauthorized
 import twitter4j.conf.ConfigurationBuilder
 import scalikejdbc.SQLInterpolation._
+import scalikejdbc.SQLInterpolation.SQLSyntax._
+import model._
 
 object ApiController {
 
@@ -31,6 +32,8 @@ object ApiController {
  */
 class ApiController extends ApplicationController  {
   import ApiController._
+
+  private val p = Purchase.defaultAlias
 
   beforeAction() {
     for {
@@ -71,8 +74,14 @@ class ApiController extends ApplicationController  {
 
   def listRecentPurchases = {
     val limit = params.getAsOrElse[Int]("limit", 5).max(0)
-    val p = Purchase.defaultAlias
     Purchase.joins(Purchase.tags).findAllPaging(offset = 0, limit = limit, ordering = sqls"${p.createdAt} desc")
+  }
+
+  def userStats = {
+    val userId = twitter.getId
+    val totalSpent = Purchase.totalSpentByUser(userId)
+    val firstPurchase = Purchase.findFirstPurchaseByUser(userId)
+    UserStats(totalSpent, firstPurchase.map(_.createdAt))
   }
 
 }
